@@ -421,10 +421,19 @@ a {
 }
 
 .roundItem {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 12px 40px;
+  min-height: 64px;
+}
+
+.roundItem > .chipButton--danger {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .roundMatch {

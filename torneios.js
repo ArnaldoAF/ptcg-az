@@ -81,6 +81,15 @@ function renderRoundsList() {
                   <span class="roundPlayer__pts">${pts2} pts</span>
                 </button>
               </div>
+              <button
+                class="chipButton chipButton--danger"
+                type="button"
+                data-round-remove="${String(r.id)}"
+                aria-label="Remover round ${LegendsAZ.escapeHtml(j1)} vs ${LegendsAZ.escapeHtml(j2)}"
+                title="Remover round"
+              >
+                ×
+              </button>
             </li>
           `;
       })
@@ -196,6 +205,30 @@ function bindRoundsListEvents() {
   root.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+
+    const removeBtn = target.closest("[data-round-remove]");
+    if (removeBtn) {
+      const idStr = removeBtn.getAttribute("data-round-remove");
+      const roundId = Number(idStr || "");
+      if (!Number.isFinite(roundId)) return;
+
+      const round = roundsState.rounds.find((r) => r.id === roundId);
+      const j1 = round?.jogador1?.nome || "Jogador 1";
+      const j2 = round?.jogador2?.nome || "Jogador 2";
+
+      const ok = window.confirm(`Remover o confronto ${j1} vs ${j2}?`);
+      if (!ok) return;
+
+      roundsState.rounds = roundsState.rounds.filter((r) => r.id !== roundId);
+      saveRounds();
+
+      roundsState.players = LegendsAZ.calculatePlayerStats(roundsState.players, roundsState.rounds);
+      LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, roundsState.players);
+
+      renderRoundsList();
+      renderRoundsForm();
+      return;
+    }
 
     const winBtn = target.closest("[data-winner]");
     if (!winBtn) return;
