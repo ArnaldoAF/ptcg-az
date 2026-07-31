@@ -37,57 +37,54 @@ function renderRoundsList() {
   root.innerHTML = `
     <ul class="simpleList" aria-label="Rounds cadastrados">
       ${roundsState.rounds
-        .map((r) => {
-          const j1 = r.jogador1?.nome || "Jogador 1";
-          const j2 = r.jogador2?.nome || "Jogador 2";
-          let resultado = "Empate";
-          if (r.vencedor === "jogador1") resultado = `${j1} venceu`;
-          else if (r.vencedor === "jogador2") resultado = `${j2} venceu`;
+      .map((r) => {
+        const j1 = r.jogador1?.nome || "Jogador 1";
+        const j2 = r.jogador2?.nome || "Jogador 2";
+        const p1 = roundsState.players.find((p) => p.id === r.jogador1?.id);
+        const p2 = roundsState.players.find((p) => p.id === r.jogador2?.id);
+        const pts1 = p1 ? p1.pontos : 1000;
+        const pts2 = p2 ? p2.pontos : 1000;
 
-          const isWin1 = r.vencedor === "jogador1";
-          const isWin2 = r.vencedor === "jogador2";
+        let resultado = "Empate";
+        if (r.vencedor === "jogador1") resultado = `${j1} venceu`;
+        else if (r.vencedor === "jogador2") resultado = `${j2} venceu`;
 
-          return `
+        const isWin1 = r.vencedor === "jogador1";
+        const isWin2 = r.vencedor === "jogador2";
+
+        return `
             <li class="simpleList__item roundItem">
-              <span class="simpleList__dot" aria-hidden="true"></span>
               <div class="roundMatch">
-                <div class="roundPlayer ${isWin1 ? "roundPlayer--winner" : ""}">
+                <button
+                  class="roundPlayer ${isWin1 ? "roundPlayer--winner" : ""}"
+                  type="button"
+                  data-round-id="${r.id}"
+                  data-winner="jogador1"
+                  title="Declarar vitória para ${LegendsAZ.escapeHtml(j1)}"
+                  aria-label="Declarar vitória para ${LegendsAZ.escapeHtml(j1)}"
+                >
                   <span class="roundPlayer__name">${LegendsAZ.escapeHtml(j1)}</span>
-                  <button
-                    class="winBtn ${isWin1 ? "winBtn--active" : ""}"
-                    type="button"
-                    data-round-id="${r.id}"
-                    data-winner="jogador1"
-                    title="Dar vitória para ${LegendsAZ.escapeHtml(j1)}"
-                    aria-label="Dar vitória para ${LegendsAZ.escapeHtml(j1)}"
-                  >
-                    🏆 <span class="winBtn__label">Vitória</span>
-                  </button>
-                </div>
+                  <span class="roundPlayer__pts">${pts1} pts</span>
+                </button>
 
                 <span class="vsLabel">vs</span>
 
-                <div class="roundPlayer ${isWin2 ? "roundPlayer--winner" : ""}">
+                <button
+                  class="roundPlayer ${isWin2 ? "roundPlayer--winner" : ""}"
+                  type="button"
+                  data-round-id="${r.id}"
+                  data-winner="jogador2"
+                  title="Declarar vitória para ${LegendsAZ.escapeHtml(j2)}"
+                  aria-label="Declarar vitória para ${LegendsAZ.escapeHtml(j2)}"
+                >
                   <span class="roundPlayer__name">${LegendsAZ.escapeHtml(j2)}</span>
-                  <button
-                    class="winBtn ${isWin2 ? "winBtn--active" : ""}"
-                    type="button"
-                    data-round-id="${r.id}"
-                    data-winner="jogador2"
-                    title="Dar vitória para ${LegendsAZ.escapeHtml(j2)}"
-                    aria-label="Dar vitória para ${LegendsAZ.escapeHtml(j2)}"
-                  >
-                    🏆 <span class="winBtn__label">Vitória</span>
-                  </button>
-                </div>
-              </div>
-              <div class="roundStatus">
-                <span class="simpleList__meta">${LegendsAZ.escapeHtml(resultado)}</span>
+                  <span class="roundPlayer__pts">${pts2} pts</span>
+                </button>
               </div>
             </li>
           `;
-        })
-        .join("")}
+      })
+      .join("")}
     </ul>
   `;
 }

@@ -421,28 +421,58 @@ a {
 }
 
 .roundItem {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
 }
 
 .roundMatch {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 10px;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.roundMatch > .roundPlayer:first-child {
+  justify-self: end;
+}
+
+.roundMatch > .vsLabel {
+  justify-self: center;
+  text-align: center;
+}
+
+.roundMatch > .roundPlayer:last-child {
+  justify-self: start;
 }
 
 .roundPlayer {
+  appearance: none;
+  font-family: inherit;
+  color: var(--text);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
+  padding: 8px 14px;
+  min-height: 40px;
+  max-width: 100%;
   border-radius: var(--radiusSm);
   background: var(--surface2);
   border: 1px solid var(--border);
+  cursor: pointer;
   transition: all 0.2s ease;
+  user-select: none;
+}
+
+.roundPlayer:hover {
+  border-color: rgba(124, 92, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.roundPlayer:active {
+  transform: translateY(0);
 }
 
 .roundPlayer--winner {
@@ -451,41 +481,33 @@ a {
   box-shadow: 0 0 12px rgba(250, 204, 21, 0.15);
 }
 
+.roundPlayer--winner .roundPlayer__pts {
+  border-color: rgba(250, 204, 21, 0.5);
+  background: rgba(250, 204, 21, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .roundPlayer__name {
   font-weight: 700;
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
-.winBtn {
-  appearance: none;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  color: var(--muted);
+.roundPlayer__pts {
   font-size: 12px;
-  font-weight: 650;
-  padding: 4px 10px;
-  min-height: 32px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 999px;
   transition: all 0.2s ease;
 }
 
-.winBtn:hover {
-  background: rgba(250, 204, 21, 0.2);
-  color: var(--text);
-  border-color: rgba(250, 204, 21, 0.5);
-}
 
-.winBtn--active {
-  background: linear-gradient(135deg, rgba(250, 204, 21, 0.95), rgba(234, 179, 8, 0.95));
-  color: #1a1a1a;
-  border-color: rgba(250, 204, 21, 1);
-  font-weight: 850;
-  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.35);
-}
 
 .roundStatus {
   display: flex;
