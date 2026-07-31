@@ -111,7 +111,11 @@ function renderRoundsForm() {
     return;
   }
 
-  const options = roundsState.players
+  const sortedPlayers = [...roundsState.players].sort(
+    (a, b) => b.pontos - a.pontos || b.vitorias - a.vitorias || a.nome.localeCompare(b.nome),
+  );
+
+  const options = sortedPlayers
     .map(
       (p) =>
         `<option value="${String(p.id)}">${LegendsAZ.escapeHtml(p.nome)} (${p.pontos} pts)</option>`,

@@ -289,6 +289,41 @@ a {
   flex: 0 0 auto;
 }
 
+.playerRank {
+  font-size: 12px;
+  font-weight: 800;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.playerRank--1 {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.35), rgba(234, 179, 8, 0.25));
+  border-color: rgba(250, 204, 21, 0.8);
+  color: #facc15;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+}
+
+.playerRank--2 {
+  background: linear-gradient(135deg, rgba(203, 213, 225, 0.35), rgba(148, 163, 184, 0.25));
+  border-color: rgba(203, 213, 225, 0.8);
+  color: #e2e8f0;
+}
+
+.playerRank--3 {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.35), rgba(180, 83, 9, 0.25));
+  border-color: rgba(217, 119, 6, 0.8);
+  color: #fbbf24;
+}
+
 .simpleList__text {
   font-weight: 700;
   letter-spacing: 0.1px;

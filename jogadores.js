@@ -47,27 +47,36 @@ function renderPlayersList() {
     return;
   }
 
+  // Ordenar jogadores por pontos decrescente (e por vitórias/nome como critério de desempate)
+  const sortedPlayers = [...state.players].sort(
+    (a, b) => b.pontos - a.pontos || b.vitorias - a.vitorias || a.nome.localeCompare(b.nome),
+  );
+
   root.innerHTML = `
     <ul class="simpleList" aria-label="Jogadores cadastrados">
-      ${state.players
+      ${sortedPlayers
         .map(
-          (p) => `
-            <li class="simpleList__item" data-player-id="${String(p.id)}">
-              <span class="simpleList__dot" aria-hidden="true"></span>
-              <div class="simpleList__main">
-                <span class="simpleList__text">${LegendsAZ.escapeHtml(p.nome)}</span>
-                <span class="simpleList__meta">${p.pontos} pts <span class="statsDetail">(${p.vitorias}V / ${p.derrotas}D)</span></span>
-              </div>
-              <button
-                class="chipButton chipButton--danger"
-                type="button"
-                aria-label="Remover jogador ${LegendsAZ.escapeHtml(p.nome)}"
-                data-player-remove="${String(p.id)}"
-              >
-                ×
-              </button>
-            </li>
-          `,
+          (p, index) => {
+            const rank = index + 1;
+            const rankClass = rank <= 3 ? `playerRank--${rank}` : "";
+            return `
+              <li class="simpleList__item" data-player-id="${String(p.id)}">
+                <span class="playerRank ${rankClass}">${rank}º</span>
+                <div class="simpleList__main">
+                  <span class="simpleList__text">${LegendsAZ.escapeHtml(p.nome)}</span>
+                  <span class="simpleList__meta">${p.pontos} pts <span class="statsDetail">(${p.vitorias}V / ${p.derrotas}D)</span></span>
+                </div>
+                <button
+                  class="chipButton chipButton--danger"
+                  type="button"
+                  aria-label="Remover jogador ${LegendsAZ.escapeHtml(p.nome)}"
+                  data-player-remove="${String(p.id)}"
+                >
+                  ×
+                </button>
+              </li>
+            `;
+          },
         )
         .join("")}
     </ul>
