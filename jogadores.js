@@ -32,7 +32,8 @@ function addPlayerByName(name) {
     derrotas: DEFAULT_PLAYER.derrotas,
   };
 
-  state.players = [...state.players, player];
+  const rounds = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.rounds, []);
+  state.players = LegendsAZ.calculatePlayerStats([...state.players, player], rounds);
   LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, state.players);
   return { ok: true, player };
 }
@@ -55,7 +56,7 @@ function renderPlayersList() {
               <span class="simpleList__dot" aria-hidden="true"></span>
               <div class="simpleList__main">
                 <span class="simpleList__text">${LegendsAZ.escapeHtml(p.nome)}</span>
-                <span class="simpleList__meta">${p.pontos} pts</span>
+                <span class="simpleList__meta">${p.pontos} pts <span class="statsDetail">(${p.vitorias}V / ${p.derrotas}D)</span></span>
               </div>
               <button
                 class="chipButton chipButton--danger"
@@ -162,13 +163,18 @@ function bindPlayersListEvents() {
     if (!ok) return;
 
     state.players = state.players.filter((p) => p.id !== id);
+    const rounds = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.rounds, []);
+    state.players = LegendsAZ.calculatePlayerStats(state.players, rounds);
     LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, state.players);
     renderPlayersList();
   });
 }
 
 function setupPlayersPage() {
-  state.players = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.players, []);
+  const rawPlayers = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.players, []);
+  const rounds = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.rounds, []);
+  state.players = LegendsAZ.calculatePlayerStats(rawPlayers, rounds);
+  LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, state.players);
   renderPlayersList();
   renderPlayersAdd();
   bindPlayersListEvents();

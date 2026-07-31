@@ -100,6 +100,59 @@ const LegendsAZ = (() => {
       .replaceAll("'", "&#39;");
   }
 
+  function calculatePlayerStats(players, rounds) {
+    const DEFAULT_PONTOS = 1000;
+    const POINTS_PER_WIN = 300;
+
+    const statsMap = new Map();
+    for (const p of players) {
+      statsMap.set(p.id, {
+        pontos: DEFAULT_PONTOS,
+        vitorias: 0,
+        derrotas: 0,
+      });
+    }
+
+    for (const r of rounds) {
+      if (!r || !r.vencedor || r.vencedor === "empate") continue;
+      const j1Id = r.jogador1?.id;
+      const j2Id = r.jogador2?.id;
+
+      const s1 = statsMap.get(j1Id);
+      const s2 = statsMap.get(j2Id);
+
+      if (r.vencedor === "jogador1") {
+        if (s1) {
+          s1.pontos += POINTS_PER_WIN;
+          s1.vitorias += 1;
+        }
+        if (s2) {
+          s2.pontos -= POINTS_PER_WIN;
+          s2.derrotas += 1;
+        }
+      } else if (r.vencedor === "jogador2") {
+        if (s2) {
+          s2.pontos += POINTS_PER_WIN;
+          s2.vitorias += 1;
+        }
+        if (s1) {
+          s1.pontos -= POINTS_PER_WIN;
+          s1.derrotas += 1;
+        }
+      }
+    }
+
+    return players.map((p) => {
+      const s = statsMap.get(p.id);
+      return {
+        ...p,
+        pontos: s ? s.pontos : DEFAULT_PONTOS,
+        vitorias: s ? s.vitorias : 0,
+        derrotas: s ? s.derrotas : 0,
+      };
+    });
+  }
+
   function setup() {
     ensureShell();
     applyTheme(getPreferredTheme());
@@ -120,6 +173,7 @@ const LegendsAZ = (() => {
     applyTheme,
     setActiveTab,
     escapeHtml,
+    calculatePlayerStats,
     setup,
   };
 })();

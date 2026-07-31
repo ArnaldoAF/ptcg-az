@@ -420,6 +420,78 @@ a {
   background: var(--surface);
 }
 
+.roundItem {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.roundMatch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
+
+.roundPlayer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radiusSm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.roundPlayer--winner {
+  border-color: rgba(250, 204, 21, 0.6);
+  background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.18), transparent 70%), var(--surface2);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.15);
+}
+
+.roundPlayer__name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.winBtn {
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  padding: 4px 10px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.winBtn:hover {
+  background: rgba(250, 204, 21, 0.2);
+  color: var(--text);
+  border-color: rgba(250, 204, 21, 0.5);
+}
+
+.winBtn--active {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.95), rgba(234, 179, 8, 0.95));
+  color: #1a1a1a;
+  border-color: rgba(250, 204, 21, 1);
+  font-weight: 850;
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.35);
+}
+
+.roundStatus {
+  display: flex;
+  align-items: center;
+}
+
 @media (min-width: 720px) {
   .app {
     padding-bottom: 0;

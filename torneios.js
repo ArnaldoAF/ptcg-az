@@ -4,8 +4,10 @@ const roundsState = {
 };
 
 function loadTournamentData() {
-  roundsState.players = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.players, []);
+  const rawPlayers = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.players, []);
   roundsState.rounds = LegendsAZ.loadJson(LegendsAZ.STORAGE_KEYS.rounds, []);
+  roundsState.players = LegendsAZ.calculatePlayerStats(rawPlayers, roundsState.rounds);
+  LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, roundsState.players);
 }
 
 function saveRounds() {
@@ -20,6 +22,8 @@ function generateRoundId() {
   } while (used.has(id));
   return id;
 }
+
+let hasBoundRoundsListEvents = false;
 
 function renderRoundsList() {
   const root = document.getElementById("roundsList");
@@ -39,13 +43,45 @@ function renderRoundsList() {
           let resultado = "Empate";
           if (r.vencedor === "jogador1") resultado = `${j1} venceu`;
           else if (r.vencedor === "jogador2") resultado = `${j2} venceu`;
+
+          const isWin1 = r.vencedor === "jogador1";
+          const isWin2 = r.vencedor === "jogador2";
+
           return `
-            <li class="simpleList__item">
+            <li class="simpleList__item roundItem">
               <span class="simpleList__dot" aria-hidden="true"></span>
-              <div class="simpleList__main">
-                <span class="simpleList__text">
-                  ${LegendsAZ.escapeHtml(j1)} <span class="vsLabel">vs</span> ${LegendsAZ.escapeHtml(j2)}
-                </span>
+              <div class="roundMatch">
+                <div class="roundPlayer ${isWin1 ? "roundPlayer--winner" : ""}">
+                  <span class="roundPlayer__name">${LegendsAZ.escapeHtml(j1)}</span>
+                  <button
+                    class="winBtn ${isWin1 ? "winBtn--active" : ""}"
+                    type="button"
+                    data-round-id="${r.id}"
+                    data-winner="jogador1"
+                    title="Dar vitória para ${LegendsAZ.escapeHtml(j1)}"
+                    aria-label="Dar vitória para ${LegendsAZ.escapeHtml(j1)}"
+                  >
+                    🏆 <span class="winBtn__label">Vitória</span>
+                  </button>
+                </div>
+
+                <span class="vsLabel">vs</span>
+
+                <div class="roundPlayer ${isWin2 ? "roundPlayer--winner" : ""}">
+                  <span class="roundPlayer__name">${LegendsAZ.escapeHtml(j2)}</span>
+                  <button
+                    class="winBtn ${isWin2 ? "winBtn--active" : ""}"
+                    type="button"
+                    data-round-id="${r.id}"
+                    data-winner="jogador2"
+                    title="Dar vitória para ${LegendsAZ.escapeHtml(j2)}"
+                    aria-label="Dar vitória para ${LegendsAZ.escapeHtml(j2)}"
+                  >
+                    🏆 <span class="winBtn__label">Vitória</span>
+                  </button>
+                </div>
+              </div>
+              <div class="roundStatus">
                 <span class="simpleList__meta">${LegendsAZ.escapeHtml(resultado)}</span>
               </div>
             </li>
@@ -154,10 +190,50 @@ function bindRoundsFormEvents() {
   createBtn.addEventListener("click", createRound);
 }
 
+function bindRoundsListEvents() {
+  if (hasBoundRoundsListEvents) return;
+  const root = document.getElementById("roundsList");
+  if (!root) return;
+
+  hasBoundRoundsListEvents = true;
+  root.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const winBtn = target.closest("[data-winner]");
+    if (!winBtn) return;
+
+    const roundIdStr = winBtn.getAttribute("data-round-id");
+    const winnerChoice = winBtn.getAttribute("data-winner");
+    const roundId = Number(roundIdStr || "");
+
+    if (!Number.isFinite(roundId) || !winnerChoice) return;
+
+    const round = roundsState.rounds.find((r) => r.id === roundId);
+    if (!round) return;
+
+    // Se clicar no jogador que já é o vencedor, alterna para empate. Caso contrário, define o novo vencedor.
+    if (round.vencedor === winnerChoice) {
+      round.vencedor = "empate";
+    } else {
+      round.vencedor = winnerChoice;
+    }
+
+    saveRounds();
+
+    roundsState.players = LegendsAZ.calculatePlayerStats(roundsState.players, roundsState.rounds);
+    LegendsAZ.saveJson(LegendsAZ.STORAGE_KEYS.players, roundsState.players);
+
+    renderRoundsList();
+    renderRoundsForm();
+  });
+}
+
 function setupTorneiosPage() {
   loadTournamentData();
   renderRoundsList();
   renderRoundsForm();
+  bindRoundsListEvents();
 }
 
 setupTorneiosPage();
