@@ -412,6 +412,14 @@ a {
   color: var(--muted);
 }
 
+.formContainer {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSm);
+  padding: 16px;
+  background: var(--surface);
+}
+
 @media (min-width: 720px) {
   .app {
     padding-bottom: 0;

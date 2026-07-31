@@ -77,21 +77,23 @@ function renderRoundsForm() {
     .join("");
 
   root.innerHTML = `
-    <div class="roundsForm" role="form" aria-label="Criar round">
-      <select class="selectInput" id="roundPlayer1">
-        <option value="">Jogador 1</option>
-        ${options}
-      </select>
-      <span class="vsLabel">vs</span>
-      <select class="selectInput" id="roundPlayer2">
-        <option value="">Jogador 2</option>
-        ${options}
-      </select>
+    <div class="formContainer">
+      <div class="roundsForm" role="form" aria-label="Criar round">
+        <select class="selectInput" id="roundPlayer1">
+          <option value="">Jogador 1</option>
+          ${options}
+        </select>
+        <span class="vsLabel">vs</span>
+        <select class="selectInput" id="roundPlayer2">
+          <option value="">Jogador 2</option>
+          ${options}
+        </select>
+      </div>
+      <div class="spacer12"></div>
+      <button class="primaryButton primaryButton--full" id="roundCreate" type="button">
+        Criar round
+      </button>
     </div>
-    <div class="spacer12"></div>
-    <button class="primaryButton primaryButton--full" id="roundCreate" type="button">
-      Criar round
-    </button>
   `;
 
   bindRoundsFormEvents();
